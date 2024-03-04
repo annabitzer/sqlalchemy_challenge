@@ -40,8 +40,10 @@ def homepage():
         f"/api/v1.0/precipitation<br/>"
         f"/api/v1.0/stations<br/>"
         f"/api/v1.0/tobs<br/>"
-        f"/api/v1.0/<start><br/>"
-        f"/api/v1.0/<start>/<end>"
+        f"To return all data after a specific date, replace 'start' with desired date in yyyy-mm-dd format.<br>"
+        f"/api/v1.0/start<br/>"
+        f"To return all data between specific dates, replace 'start' and 'end' with desired date range in yyyy-mm-dd format.<br>"
+        f"/api/v1.0/start/end"
     )
 
 @app.route("/api/v1.0/precipitation")
@@ -120,5 +122,40 @@ def temperature():
     #return last 12 months of temperature data in JSON format
     return jsonify(temp_data)
 
+@app.route("/api/v1.0/<start_date>")
+def temp(start_date):
+     #Create session
+    session = Session(engine)
+
+    #find data after the given start date        
+    temp_messy = session.query(func.min(Measurement.tobs),
+                              func.avg(Measurement.tobs),
+                              func.max(Measurement.tobs)).\
+                             filter(Measurement.date >= start_date).all()
+    
+    session.close()
+
+    temp_clean = list(np.ravel(temp_messy))
+
+    return jsonify(f'The min, mean and max temps after the selected date are: {temp_clean}')
+                
+@app.route("/api/v1.0/<start_date>/<end_date>")
+def temp_range(start_date, end_date):
+     #Create session
+    session = Session(engine)
+
+    #find data after the given start date        
+    temp_messy = session.query(func.min(Measurement.tobs),
+                              func.avg(Measurement.tobs),
+                              func.max(Measurement.tobs)).\
+                             filter(Measurement.date >= start_date).\
+                             filter(Measurement.date <= end_date).all()
+    
+    session.close()
+
+    temp_clean = list(np.ravel(temp_messy))
+
+    return jsonify(f'The min, mean and max temps for the selected date range are: {temp_clean}')
+    
 if __name__ == '__main__':
     app.run(debug=True)
