@@ -40,9 +40,9 @@ def homepage():
         f"/api/v1.0/precipitation<br/>"
         f"/api/v1.0/stations<br/>"
         f"/api/v1.0/tobs<br/>"
-        f"To return all data after a specific date, replace 'start' with desired date in yyyy-mm-dd format.<br>"
+        f"To return min, max and average temperature data after a specific date, replace 'start' with desired date in yyyy-mm-dd format.<br>"
         f"/api/v1.0/start<br/>"
-        f"To return all data between specific dates, replace 'start' and 'end' with desired date range in yyyy-mm-dd format.<br>"
+        f"To return min, max and average temperature data between specific dates, replace 'start' and 'end' with desired date range in yyyy-mm-dd format.<br>"
         f"/api/v1.0/start/end"
     )
 
